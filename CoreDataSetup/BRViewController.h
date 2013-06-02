@@ -9,5 +9,11 @@
 #import <UIKit/UIKit.h>
 
 @interface BRViewController : UIViewController
+<UITableViewDataSource, UITableViewDelegate>
+
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *activityIndicator;
+@property (weak, nonatomic) IBOutlet UITableView *bookTableView;
+
+- (void)coreDataInitialized;
 
 @end
