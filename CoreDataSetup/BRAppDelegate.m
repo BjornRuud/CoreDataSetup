@@ -29,20 +29,23 @@
      setupCoreDataWithModelURL:modelURL
      storeURL:storeURL
      setupType:setupType
-     completion:^{
+     completion:^(NSError *error) {
+         if (error) {
+             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:BRCoreDataManagerErrorDomain
+                                                             message:[error localizedDescription]
+                                                            delegate:nil
+                                                   cancelButtonTitle:@"OK"
+                                                   otherButtonTitles:nil];
+             [alert show];
+             return;
+         }
+
          dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
              [self loadBooks];
              dispatch_async(dispatch_get_main_queue(), ^{
                  [self.window.rootViewController performSelector:@selector(coreDataInitialized)];
              });
          });
-     } failure:^(NSError *error) {
-         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:BRCoreDataManagerErrorDomain
-                                                         message:[error localizedDescription]
-                                                        delegate:nil
-                                               cancelButtonTitle:@"OK"
-                                               otherButtonTitles:nil];
-         [alert show];
      }];
 
     return YES;

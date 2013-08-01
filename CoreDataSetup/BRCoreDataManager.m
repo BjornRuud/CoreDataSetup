@@ -84,12 +84,11 @@ NSString * const BRCoreDataManagerErrorDomain = @"BRCoreDataManagerErrorDomain";
 - (void)setupCoreDataWithModelURL:(NSURL *)modelURL
                          storeURL:(NSURL *)storeURL
                         setupType:(BRCoreDataSetupType)setupType
-                       completion:(void (^)())completion
-                          failure:(void (^)(NSError *error))failure
+                       completion:(void (^)(NSError *error))completion
 {
     if (_isInitialized) {
         NSString *message = @"Core Data already initialized";
-        if (failure) failure([self errorWithMessage:message]);
+        if (completion) completion([self errorWithMessage:message]);
         return;
     }
 
@@ -98,7 +97,7 @@ NSString * const BRCoreDataManagerErrorDomain = @"BRCoreDataManagerErrorDomain";
     NSManagedObjectModel *mom = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
     if (!mom) {
         NSString *message = [NSString stringWithFormat:@"Failed to initialize managed object model %@", [modelURL absoluteString]];
-        if (failure) failure([self errorWithMessage:message]);
+        if (completion) completion([self errorWithMessage:message]);
         return;
     }
     DLog(@"Managed Object Model initialized");
@@ -106,7 +105,7 @@ NSString * const BRCoreDataManagerErrorDomain = @"BRCoreDataManagerErrorDomain";
     NSPersistentStoreCoordinator *psc = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:mom];
     if (!psc) {
         NSString *message = @"Failed to initialize persistent store coordinator";
-        if (failure) failure([self errorWithMessage:message]);
+        if (completion) completion([self errorWithMessage:message]);
         return;
     }
     DLog(@"Persistent Store Coordinator initialized");
@@ -123,7 +122,7 @@ NSString * const BRCoreDataManagerErrorDomain = @"BRCoreDataManagerErrorDomain";
                                                              error:&error];
         if (!store) {
             dispatch_sync(dispatch_get_main_queue(), ^{
-                if (failure) failure(error);
+                if (completion) completion(error);
             });
             return;
         }
@@ -155,7 +154,7 @@ NSString * const BRCoreDataManagerErrorDomain = @"BRCoreDataManagerErrorDomain";
         dispatch_sync(dispatch_get_main_queue(), ^{
             _isInitialized = YES;
             DLog(@"End Core Data setup");
-            if (completion) completion();
+            if (completion) completion(nil);
         });
     });
 }

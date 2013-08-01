@@ -26,8 +26,7 @@ typedef NS_ENUM(NSInteger, BRCoreDataSetupType) {
 - (void)setupCoreDataWithModelURL:(NSURL *)modelURL
                          storeURL:(NSURL *)storeURL
                         setupType:(BRCoreDataSetupType)setupType
-                       completion:(void (^)())completion
-                          failure:(void (^)(NSError *error))failure;
+                       completion:(void (^)(NSError *error))completion;
 
 - (NSManagedObjectContext *)mainContext;
 - (NSManagedObjectContext *)tempContext;
